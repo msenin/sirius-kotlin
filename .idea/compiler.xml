@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="ru.kotlin.sirius2019.1-basics.main" target="1.8" />
+      <module name="ru.kotlin.sirius2019.1-basics.test" target="1.8" />
+      <module name="ru.kotlin.sirius2019.lecture1.main" target="1.8" />
+      <module name="ru.kotlin.sirius2019.lecture1.test" target="1.8" />
+      <module name="ru.kotlin.sirius2019.part1.main" target="1.8" />
+      <module name="ru.kotlin.sirius2019.part1.test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
