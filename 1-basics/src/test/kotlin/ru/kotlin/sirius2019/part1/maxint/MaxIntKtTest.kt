@@ -13,17 +13,13 @@ class MaxIntKtTest {
     fun testMaxInt() {
         assertMaxInt(arrayOf("1", "2"), "2")
         assertMaxInt(arrayOf("2", "1"), "2")
-        assertMaxInt(arrayOf("2", "2"), "2")
+        assertMaxInt(arrayOf("200", "2"), "200")
         assertMaxInt(arrayOf("-1", "-2"), "-1")
         assertThrows(NumberFormatException::class.java) {
-            main(arrayOf("l", "2"))
+            main(arrayOf("one", "2"))
         }
-        assertThrows(IllegalArgumentException::class.java) {
-            main(arrayOf("1", "2", "3"))
-        }
-        assertThrows(IllegalArgumentException::class.java) {
-            main(arrayOf("1"))
-        }
+        assertMaxInt(arrayOf("1"), "Неверное число аргументов")
+        assertMaxInt(arrayOf("1", "2", "3"), "Неверное число аргументов")
     }
 
     private fun assertMaxInt(input: Array<String>, expected: String) {
@@ -35,7 +31,7 @@ class MaxIntKtTest {
 
     private fun catchStdOut(block: () -> Unit): String {
         val outputStream = ByteArrayOutputStream()
-        val printStream = PrintStream(outputStream);
+        val printStream = PrintStream(outputStream)
         try {
             System.setOut(printStream)
             block()

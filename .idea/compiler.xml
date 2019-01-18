@@ -8,6 +8,8 @@
       <module name="ru.kotlin.sirius2019.lecture1.test" target="1.8" />
       <module name="ru.kotlin.sirius2019.part1.main" target="1.8" />
       <module name="ru.kotlin.sirius2019.part1.test" target="1.8" />
+      <module name="ru.kotlin.sirius2019.part2.main" target="1.8" />
+      <module name="ru.kotlin.sirius2019.part2.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
