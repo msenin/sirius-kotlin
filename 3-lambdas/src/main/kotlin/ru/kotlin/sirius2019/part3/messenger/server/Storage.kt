@@ -50,7 +50,8 @@ class Storage {
     }
 
     fun findUserById(userId: String): UserInfo? {
-        return users.firstOrNull { it.userId == userId}
+        // TODO: Реализовать метод поиска пользователя в списке users по его userId
+        return null
     }
 
     fun addToken(userId: String, token: String) {
@@ -86,7 +87,8 @@ class Storage {
     }
 
     fun findMemberByChatIdAndUserId(chatId: Int, userId: String) : MemberInfo? {
-        return members.firstOrNull { it.chatId == chatId && it.userId == userId}
+        // TODO: Реализовать метод поиска участника чата в списке members по chatId и userId
+        return null
     }
 
     fun findMemberById(memberId: Int) : MemberInfo? {
@@ -139,10 +141,11 @@ class Storage {
         messages.add(messageInfo)
     }
 
+    // Подсказка: в этой функции ошибка!
     fun findMessages(chatId: Int, afterMessageId : Int = 0) : List<MessageInfo> {
         val chatMembers = findMemberIdsByChatId(chatId)
         val createdAfter = if (afterMessageId > 0) {
-            messages.firstOrNull { it.messageId == afterMessageId }?.createdOn
+            messages.first { it.messageId == afterMessageId }.createdOn
         }
         else {
             null
@@ -150,7 +153,6 @@ class Storage {
         return messages
                 .filter{ it.memberId in chatMembers && (createdAfter == null || it.createdOn >= createdAfter) }
                 .sortedBy { it.createdOn }
-
     }
 
     fun findMessageById(messageId: Int) : MessageInfo? {

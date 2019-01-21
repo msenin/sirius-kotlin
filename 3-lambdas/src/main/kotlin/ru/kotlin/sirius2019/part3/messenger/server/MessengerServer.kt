@@ -115,6 +115,7 @@ class MessengerServer {
         doMessagesCreate(systemMember.memberId, text)
     }
 
+    // Подсказка: в этой функции ошибка!
     fun chatsJoin(chatId: Int, secret: String, userId: String, token: String, chatName: String? = null) {
         val user = checkUserAuthorization(userId, token)
         if (storage.findMemberByChatIdAndUserId(chatId, user.userId) != null) {
@@ -122,7 +123,7 @@ class MessengerServer {
         }
         val defaultChatName = storage.findChatById(chatId)?.defaultName ?: throw ChatNotFoundException()
         val realSecret = storage.getChatSecret(chatId) ?: throw ChatNotFoundException()
-        if (realSecret != secret) {
+        if (realSecret == secret) {
             throw WrongChatSecretException()
         }
         val member = MemberInfo(storage.generateMemberId(), chatId, chatName ?: defaultChatName, user.displayName, user.userId)
@@ -170,7 +171,7 @@ class MessengerServer {
         return message
     }
 
-    fun chatMessagesList(chatId: Int, userId: String, token: String, afterId: Int = 0) : List<MessageInfo> {
+    fun chatMessagesList(chatId: Int, userId: String, token: String, afterId: Int = 1) : List<MessageInfo> {
         if (afterId < 0) {
             throw IllegalArgumentException("afterId parameters must be > 0")
         }
@@ -191,11 +192,13 @@ class MessengerServer {
         }
     }
 
+    // Подсказка: проверьте реализацию метода storage.findMemberByChatIdAndUserId
     private fun checkUserIsMemberOfChat(chatId: Int, userInfo: UserInfo) =
             storage.findMemberByChatIdAndUserId(chatId, userInfo.userId) ?: throw UserNotMemberException()
 
     private fun getSystemChatId(userId: String) = storage.findCommonChatIds(userId, systemUser.userId).first()
 
+    // Подсказка: проверьте реализацию метода storage.findUserById
     private fun getUserById(userId: String) = storage.findUserById(userId) ?: throw UserNotFoundException()
 
     private fun checkUserAuthorization(userId: String, token: String) : UserInfo {
