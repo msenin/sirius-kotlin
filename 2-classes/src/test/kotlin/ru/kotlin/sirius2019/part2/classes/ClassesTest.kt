@@ -33,8 +33,8 @@ class ClassesTest {
         val clazz = IntPair2::class
         assertTrue(clazz.isOpen || clazz.isAbstract, "Класс должен допускать наследование")
         assertTrue(clazz.constructors.size >= 2, "Должно быть как минимум два конструктора")
-        assertTrue(clazz.constructors.any { it.parameters.size == 2 && isInt(it.parameters[0].type) && isInt(it.parameters[1].type)},"Должно быть конструктор (Int, Int)")
-        assertTrue(clazz.constructors.any { it.parameters.isEmpty() && "PRIVATE" == it.visibility?.name }, "Должно быть конструктор без параметров")
+        assertTrue(clazz.constructors.any { it.parameters.size == 2 && isInt(it.parameters[0].type) && isInt(it.parameters[1].type)},"Должен быть конструктор (Int, Int)")
+        assertTrue(clazz.constructors.any { it.parameters.isEmpty() && "PRIVATE" == it.visibility?.name }, "Должен быть конструктор без параметров")
         assertEquals(2, clazz.memberProperties.size, "Должно быть два свойства!")
         assertTrue(clazz.memberProperties.any { it is KMutableProperty<*> && it.name == "valueX" && isInt(it.returnType) }, "Должно быть неизменяемое свойство valueX : Int")
         assertTrue(clazz.memberProperties.any { it is KMutableProperty<*> && it.name == "valueY" && isInt(it.returnType) }, "Должно быть неизменяемое свойство valueY : Int")
@@ -46,18 +46,10 @@ class ClassesTest {
 
     @Test
     fun testDerivedIntPair2() {
-        val clazz = IntPair2::class
-        assertTrue(clazz.isOpen || clazz.isAbstract, "Класс должен допускать наследование")
-        assertTrue(clazz.constructors.size >= 2, "Должно быть как минимум два конструктора")
-        assertTrue(clazz.constructors.any { it.parameters.size == 2 && isInt(it.parameters[0].type) && isInt(it.parameters[1].type)},"Должно быть конструктор (Int, Int)")
-        assertTrue(clazz.constructors.any { it.parameters.isEmpty() && "PRIVATE" == it.visibility?.name }, "Должно быть конструктор без параметров")
-        assertEquals(2, clazz.memberProperties.size, "Должно быть два свойства!")
-        assertTrue(clazz.memberProperties.any { it is KMutableProperty<*> && it.name == "valueX" && isInt(it.returnType) }, "Должно быть неизменяемое свойство valueX : Int")
-        assertTrue(clazz.memberProperties.any { it is KMutableProperty<*> && it.name == "valueY" && isInt(it.returnType) }, "Должно быть неизменяемое свойство valueY : Int")
-        assertTrue(clazz.isAbstract, "Класс должен быть абстрактным, т.к. должен содержать абстрактный метод gcd")
-        assertTrue(clazz.memberFunctions.any { it.name == "sum" && !it.isAbstract && it.isOpen && it.parameters.size == 1 && isInt(it.returnType) },"Нет требуемого метода sum" )
-        assertTrue(clazz.memberFunctions.any { it.name == "prod" && !it.isAbstract && !it.isOpen && it.parameters.size == 1 && isInt(it.returnType) },"Нет требуемого метода prod" )
-        assertTrue(clazz.memberFunctions.any { it.name == "gcd" && it.isAbstract && it.parameters.size == 1 && isInt(it.returnType) },"Нет требуемого метода gcd" )
+        val clazz = DerivedIntPair2::class
+        assertTrue(!clazz.isOpen && !clazz.isAbstract, "Класс не должен допускать наследование")
+        assertTrue(clazz.constructors.any { it.parameters.size == 2 && isInt(it.parameters[0].type) && isInt(it.parameters[1].type)},"Должен быть конструктор (Int, Int)")
+        assertTrue(clazz.memberFunctions.any { it.name == "gcd" && !it.isAbstract && it.parameters.size == 1 && isInt(it.returnType) },"Нет требуемого метода gcd" )
     }
 
     // todo(MS): https://stackoverflow.com/questions/47040783/junit-5-how-to-make-test-execution-dependent-on-another-test-passing
