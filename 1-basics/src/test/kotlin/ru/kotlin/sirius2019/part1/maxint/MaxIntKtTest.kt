@@ -26,8 +26,10 @@ class MaxIntKtTest {
         val result = catchStdOut {
             main(input)
         }
-        assertEquals("$expected\n", result)
+        assertEquals("$expected$newLine", result)
     }
+
+    private val newLine : String = catchStdOut { println() }
 
     private fun catchStdOut(block: () -> Unit): String {
         val outputStream = ByteArrayOutputStream()
