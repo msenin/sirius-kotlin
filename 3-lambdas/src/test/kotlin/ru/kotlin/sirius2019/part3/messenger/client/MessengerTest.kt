@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Disabled
 import ru.kotlin.sirius2019.part3.messenger.server.MessengerServer
+import ru.kotlin.sirius2019.part3.messenger.server.WrongChatSecretException
 
 class MessengerTest {
 
@@ -57,6 +60,13 @@ class MessengerTest {
         val chatName = matchResult.groupValues[1]
         val chatId = matchResult.groupValues[2].toInt()
         val chatSecret = matchResult.groupValues[3]
+
+        // Проверим, что нельзя присоединиться к чату с неверным паролем
+        assertThrows(WrongChatSecretException::class.java, {
+            user2.joinToChat(chatId, "wrongSecret", chatName)
+        }, "Нет исключения WrongChatSecretException при использовании неверного пароля чата")
+
+        // Пробуем присоединиться к чату с правильным паролем
         user2.joinToChat(chatId, chatSecret, chatName)
         val user2chat = user2.chats.firstOrNull { it.chatId == chatId } ?: fail("После присоединения чат отсутствует у второго пользователя")
 
@@ -84,5 +94,53 @@ class MessengerTest {
         user1.signOut()
         user2.signOut()
     }
+
+
+    @Disabled
+    @Test
+    fun testRefreshSpeed() {
+        client1.register(login1, name1, password1)
+        client2.register(login2, name2, password2)
+        val user1 = client1.singIn(login1, password1)
+        val user2 = client2.singIn(login2, password2)
+
+        val user1chat = user1.createChat(name2)
+        user1chat.inviteUser(user2.userId)
+
+        val user2chat = user2.processLastInvitationAndJoinChat()
+
+        val startTime = System.currentTimeMillis()
+
+        var attempt = 1
+        while (attempt <= 10000) {
+            user1chat.sendMessage("Request $attempt")
+            user2chat.refresh()
+            assertEquals("Request $attempt", user2chat.messages.last().text, "Не доставлено сообщение от первого пользователя")
+            user2chat.sendMessage("Response $attempt")
+            user1chat.refresh()
+            assertEquals("Response $attempt", user1chat.messages.last().text, "Не доставлено сообщение от второго пользователя")
+            attempt++
+        }
+        val finishTime = System.currentTimeMillis()
+
+        println("Время выполнения (мс): ${finishTime - startTime}")
+        user1.signOut()
+        user2.signOut()
+    }
+
+    private fun User.processLastInvitationAndJoinChat() : Chat {
+        this.systemChat.refresh()
+        val template = """Пользователь (.+) \(.+\) приглашает вас в чат (\d+). Используйте пароль '(.+)'""".toRegex()
+        val matchResult = template.find(this.systemChat.messages.last().text)
+                ?: fail("Последнее сообщение не является приглашением")
+        val chatName = matchResult.groupValues[1]
+        val chatId = matchResult.groupValues[2].toInt()
+        val chatSecret = matchResult.groupValues[3]
+        this.joinToChat(chatId, chatSecret, chatName)
+        return this.chats.firstOrNull { it.chatId == chatId }
+                ?: fail("После присоединения чат отсутствует у пользователя")
+    }
+
+
 
 }

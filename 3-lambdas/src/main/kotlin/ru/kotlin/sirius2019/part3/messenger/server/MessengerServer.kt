@@ -119,7 +119,7 @@ class MessengerServer {
     fun chatsJoin(chatId: Int, secret: String, userId: String, token: String, chatName: String? = null) {
         val user = checkUserAuthorization(userId, token)
         if (storage.findMemberByChatIdAndUserId(chatId, user.userId) != null) {
-            return
+            throw UserAlreadyMemberException()
         }
         val defaultChatName = storage.findChatById(chatId)?.defaultName ?: throw ChatNotFoundException()
         val realSecret = storage.getChatSecret(chatId) ?: throw ChatNotFoundException()
@@ -215,6 +215,7 @@ class MessengerServer {
 }
 
 class UserNotMemberException : Exception()
+class UserAlreadyMemberException : Exception()
 class MessageAlreadyExistsException : Exception()
 class ChatNotFoundException : Exception()
 class WrongChatSecretException : Exception()
