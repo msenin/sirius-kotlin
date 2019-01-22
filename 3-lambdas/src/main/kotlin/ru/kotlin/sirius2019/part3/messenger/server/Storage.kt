@@ -4,13 +4,15 @@ package ru.kotlin.sirius2019.part3.messenger.server
  * Хранилище пользователей, чатов, сообщений и пр.
  */
 class Storage {
-    private val users =  mutableListOf<UserInfo>()
 
-    private val token2userId = mutableMapOf<String, String>()
+    // FIXME: эффективнее было бы иметь структуры для быстрого поиска элементов по их id
+    private val users =  mutableListOf<UserInfo>()
     private val chats = mutableListOf<ChatInfo>()
     private val members = mutableListOf<MemberInfo>()
     private val messages = mutableListOf<MessageInfo>()
+
     private val chatId2secret = mutableMapOf<Int, String>()
+    private val token2userId = mutableMapOf<String, String>()
 
     internal fun clear() {
         users.clear()
