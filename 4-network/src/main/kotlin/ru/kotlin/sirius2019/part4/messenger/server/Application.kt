@@ -179,6 +179,7 @@ fun Application.module() {
     }
 }
 
+// FIXME: For right implementation use JWT. See, for instance, https://github.com/AndreasVolkmann/ktor-auth-jwt-sample
 suspend inline fun PipelineContext<Unit,ApplicationCall>.withAuthorizationParams(function: PipelineContext<Unit,ApplicationCall>.(userId: String, token:String) -> Unit) {
     val userId = call.parameters["_user_id"]
     val token = call.parameters["_token"]

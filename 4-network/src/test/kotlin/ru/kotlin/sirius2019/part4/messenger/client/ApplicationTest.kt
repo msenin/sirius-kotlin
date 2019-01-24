@@ -25,6 +25,8 @@ class ApplicationTest {
         }
     }
 
+    data class ClientUserInfo(val userId: String, val displayName: String)
+
     @Test
     fun testUserCreation() {
         val userData = NewUserInfo("pupkin", "Pupkin", "password")
@@ -35,10 +37,11 @@ class ApplicationTest {
             }.apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 val content = response.content ?: "Empty response received!"
-                val user = objectMapper.readValue<HashMap<String,String>>(content)
-                assertEquals(userData.userId, user["userId"])
-                assertEquals(userData.displayName, user["displayName"])
+                val user = objectMapper.readValue<ClientUserInfo>(content)
+                assertEquals(userData.userId, user.userId)
+                assertEquals(userData.displayName, user.displayName)
             }
+
         }
     }
 }
