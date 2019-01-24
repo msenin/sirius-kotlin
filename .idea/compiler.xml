@@ -12,6 +12,8 @@
       <module name="ru.kotlin.sirius2019.part2.test" target="11" />
       <module name="ru.kotlin.sirius2019.part3.main" target="11" />
       <module name="ru.kotlin.sirius2019.part3.test" target="11" />
+      <module name="ru.kotlin.sirius2019.part4.main" target="11" />
+      <module name="ru.kotlin.sirius2019.part4.test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
