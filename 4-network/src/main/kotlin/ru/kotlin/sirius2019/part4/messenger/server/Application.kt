@@ -54,7 +54,7 @@ fun Application.module() {
             call.respondText("OK", ContentType.Text.Html)
         }
 
-        // curl -v -X POST "http://127.0.0.1:9999/v1/chats/?" -H "Content-type: application/json" --data '{ "defaultName": "new chat" }'
+        // curl -v -X POST "http://127.0.0.1:9999/v1/chats/?_user_id=pupkin&_token=5cae1fec-ce03-48aa-922c-ea082540f772" -H "Content-type: application/json" --data '{ "defaultName": "new chat" }'
         post("/v1/chats/"){
             withAuthorizationParams { userId, token ->
                 val info = call.receive<NewChatInfo>()

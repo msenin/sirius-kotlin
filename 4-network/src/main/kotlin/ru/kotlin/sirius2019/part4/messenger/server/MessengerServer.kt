@@ -14,7 +14,7 @@ class MessengerServer {
     internal companion object {
         val storage = Storage()
         val systemUser = UserInfo("admin", "Administration", "")
-        private val passwordEncoder = BCryptPasswordEncoder(4, SecureRandom())
+        val passwordEncoder = BCryptPasswordEncoder(4, SecureRandom())
     }
 
     init {
