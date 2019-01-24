@@ -25,4 +25,21 @@ class ApplicationTest {
             }
         }
     }
+
+    @Test
+    fun testUserCreation() {
+        val userData = NewUserInfo("pupkin", "Pupkin", "password")
+        withTestApplication({ module() }) {
+            handleRequest(HttpMethod.Post, "/v1/users") {
+                setBody(objectMapper.writeValueAsString(userData))
+                addHeader("Content-type", "application/json")
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                val content = response.content ?: "Empty response received!"
+                val user = objectMapper.readValue<HashMap<String,String>>(content)
+                assertEquals(userData.userId, user["userId"])
+                assertEquals(userData.displayName, user["displayName"])
+            }
+        }
+    }
 }
