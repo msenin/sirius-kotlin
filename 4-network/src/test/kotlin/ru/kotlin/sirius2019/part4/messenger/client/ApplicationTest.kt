@@ -7,7 +7,6 @@ import io.ktor.server.testing.setBody
 import io.ktor.server.testing.withTestApplication
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import ru.kotlin.sirius2019.part4.messenger.server.*
