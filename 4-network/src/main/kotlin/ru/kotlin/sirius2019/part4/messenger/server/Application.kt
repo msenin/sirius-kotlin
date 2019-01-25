@@ -154,24 +154,20 @@ fun Application.module() {
             }
         }
 
-        // curl -X POST "http://127.0.0.1:9999/v1/singin/?user_id=pupkin&password=password"
-        post("/v1/singin") {
-            val userId = call.parameters["user_id"]
+        // curl -X POST http://127.0.0.1:9999/v1/users/pupkin/singin --data '{ "password" :"password" }'
+        post("/v1/users/{id}/singin") {
+            val userId = call.parameters["id"]
             if (userId == null) {
-                call.respond(HttpStatusCode.BadRequest, mapOf("error" to "user_id not provided"))
+                call.respond(HttpStatusCode.BadRequest, mapOf("error" to "user id not provided"))
                 return@post
             }
-            val password = call.parameters["password"]
-            if (password == null) {
-                call.respond(HttpStatusCode.BadRequest, mapOf("error" to "password not provided"))
-                return@post
-            }
-            val token = server.singIn(userId, password)
+            val info = call.receive<PasswordInfo>()
+            val token = server.singIn(userId, info.password)
             call.respond(mapOf("token" to token))
         }
 
-        // curl -X POST "http://127.0.0.1:9999/v1/singout/?user_id=pupkin&password=password"
-        post("/v1/singout") {
+        // curl -X POST "http://127.0.0.1:9999/v1/me/singout/?user_id=pupkin&password=password"
+        post("/v1/me/singout") {
             withAuthorizationParams { userId, token ->
                 call.respond(server.singOut(userId, token))
             }

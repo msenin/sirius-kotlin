@@ -16,3 +16,5 @@ data class UserInfo(val userId: String,
 data class NewUserInfo(val userId: String,
                        val displayName: String,
                        val password: String)
+
+data class PasswordInfo(val password: String)

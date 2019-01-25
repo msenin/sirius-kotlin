@@ -9,7 +9,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import org.junit.Assert.assertTrue
 import ru.kotlin.sirius2019.part4.messenger.server.*
+import kotlin.test.assertNotNull
 
 class ApplicationTest {
 
@@ -31,17 +33,42 @@ class ApplicationTest {
     fun testUserCreation() {
         val userData = NewUserInfo("pupkin", "Pupkin", "password")
         withTestApplication({ module() }) {
-            handleRequest(HttpMethod.Post, "/v1/users") {
-                setBody(objectMapper.writeValueAsString(userData))
+
+            // Register
+            handleRequest {
+                method = HttpMethod.Post
+                uri = "/v1/users"
                 addHeader("Content-type", "application/json")
+                setBody(objectMapper.writeValueAsString(userData))
             }.apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                val content = response.content ?: "Empty response received!"
-                val user = objectMapper.readValue<ClientUserInfo>(content)
+                val user = objectMapper.readValue<ClientUserInfo>(response.content!!)
                 assertEquals(userData.userId, user.userId)
                 assertEquals(userData.displayName, user.displayName)
-            }
 
+                // Login
+                handleRequest {
+                    method = HttpMethod.Post
+                    uri = "/v1/users/pupkin/singin"
+                    addHeader("Content-type", "application/json")
+                    setBody(objectMapper.writeValueAsString(PasswordInfo("password")))
+                }.apply {
+                    assertEquals(HttpStatusCode.OK, response.status())
+                    val tokenInfo = objectMapper.readValue<HashMap<String,String>>(response.content!!)
+                    val token = tokenInfo["token"]
+                    assertNotNull(token)
+                    assertTrue(token.length == 36)
+
+
+                    // Logout
+                    handleRequest {
+                        method = HttpMethod.Post
+                        uri = "/v1/me/singout?_user_id=pupkin&_token=$token"
+                    }.apply {
+                        assertEquals(HttpStatusCode.OK, response.status())
+                    }
+                }
+            }
         }
     }
 }
